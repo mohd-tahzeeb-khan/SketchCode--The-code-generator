@@ -6,6 +6,6 @@ export default function UserAuth(){
     if(!isSignedIn) return <p>Please Sign In first</p>
 
 
- return(<p>Welcome {user.firstName}</p>)
+ return(<p className="text-black">Welcome {user.firstName}</p>)
 
 }
