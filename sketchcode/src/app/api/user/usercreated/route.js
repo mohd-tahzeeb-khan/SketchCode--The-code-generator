@@ -5,6 +5,7 @@ export async function POST(requestdata) {
     try {
         const rawBodydata=await requestdata.text()
         const payload =JSON.parse(rawBodydata);
+        console.log("api/user/usercreated- request: ",payload.type)
         if(payload.type === "user.created")
             {
             const {username, first_name, email_addresses, id}=payload.data;
