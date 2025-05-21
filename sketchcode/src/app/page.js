@@ -4,7 +4,9 @@ import React from 'react'
 const page = () => {
   return (
     <>
-      <div className='h-screen flex justify-center items-center bg-green-400'>Development Server</div>
+      <div className='h-screen flex justify-center items-center bg-green-400'>Development Server
+      <button className='' onClick={()=>{}}>Dashboard</button>
+      </div>
     </>
   )
 }
