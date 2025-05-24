@@ -5,9 +5,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   const body = await req.json();
-  console.log(body)
   const userId = body.userId;
-// return NextResponse.json(userId)
   if (!userId) {
     return NextResponse.json({ error: 'User ID missing' }, { status: 400 });
   }
@@ -16,6 +14,7 @@ export async function POST(req) {
       .select()
       .from(userTable)
       .where(eq(userTable.clerkid, userId));
+      console.log("fetched user: ",userData[0])
     return NextResponse.json(userData[0] || {});
   } catch (error) {
     console.error('DB Error:', error);
