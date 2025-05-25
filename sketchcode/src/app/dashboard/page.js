@@ -1,9 +1,11 @@
 'use client'
 import { useState } from "react";
 import UserAuth from "../components/userAuth";
-import GreetingCard from "../components/greeting";
+import Profile from "../components/profile";
 import CreateFrame from "../components/create";
-// import { useState } from 'react';
+import { userContext } from "@/context/userContext";
+import ProjectGrid from "../components/projects";
+// import boxicons from "boxicons";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -18,13 +20,15 @@ const Dashboard = () => {
       case 'home':
         return <div><><UserAuth /></></div>;
       case 'Profile':
-        return <div>👤<><GreetingCard/></></div>;
+        return <div>👤<><Profile/></></div>;
       case 'Create WireFrame':
         return <div className="w-full flex flex-col justify-center items-center h-full"><CreateFrame /></div>;
       case 'Designs':
-        return <div>📊 Designs Section</div>;
+        return <div>📊 <ProjectGrid/></div>;
       case 'Collabrate':
         return <div>📊 Collabrate Section</div>;
+        case 'Credits':
+  return <div><i className='bx bx-money-withdraw text-[#fe0000] text-[30px]' ></i> Credits Section</div>;
       default:
         return <div>Select a section</div>;
     }
@@ -34,17 +38,17 @@ const Dashboard = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <div className={`${isSidebarOpen ? 'w-64' : 'w-16'} bg-gray-800 text-white transition-all duration-300`}>
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between p-4 border-t-2 border-teal-400">
           {isSidebarOpen && <h1 className="text-xl font-bold">Dashboard</h1>}
           <button
             className="text-white focus:outline-none"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
-            ☰
+            {isSidebarOpen?<i className='bx bxs-chevron-left bx-fade-left text-[25px]' ></i>:<i className='bx bx-menu text-[25px]' ></i>}
           </button>
         </div>
         <nav className="mt-4">
-          {['home', 'Create WireFrame', 'Designs', 'Collabrate', 'Profile'].map((item) => (
+          {['home', 'Create WireFrame', 'Designs', 'Collabrate', 'Profile', 'Credits'].map((item) => (
             <button
               key={item}
               onClick={() => handleSectionChange(item)}
