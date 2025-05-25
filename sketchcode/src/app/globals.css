@@ -125,3 +125,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+
+
+.logo-font {
+  font-family: "Playpen Sans Arabic", cursive;
+  font-optical-sizing: auto;
+  font-weight:800;
+  font-style: normal;
+}
