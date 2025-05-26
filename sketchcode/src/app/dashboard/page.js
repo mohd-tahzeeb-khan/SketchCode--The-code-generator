@@ -4,7 +4,7 @@ import UserAuth from "../components/userAuth";
 import Profile from "../components/profile";
 import CreateFrame from "../components/create";
 import { userContext } from "@/context/userContext";
-import ProjectGrid from "../components/projects";
+import Tryp from "../components/try";
 // import boxicons from "boxicons";
 
 const Dashboard = () => {
@@ -26,7 +26,7 @@ const Dashboard = () => {
       case 'Designs':
         return <div>📊 <ProjectGrid/></div>;
       case 'Collabrate':
-        return <div>📊 Collabrate Section</div>;
+        return <div>📊 <Tryp/></div>;
         case 'Credits':
   return <div><i className='bx bx-money-withdraw text-[#fe0000] text-[30px]' ></i> Credits Section</div>;
       default:
