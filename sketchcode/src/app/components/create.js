@@ -9,12 +9,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { userContext } from "@/context/userContext";
+import { useRouter } from "next/navigation";
+import { aiCreateContext } from "@/context/createContext";
+// import codeEditor from "../codeEditor/[id]/page";
+
+// ----------------------------------------------------------
+
 const CreateFrame = () => {
+  const route=useRouter();
   const [description, setDescription] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   const {user, setUser}=useContext(userContext)
   const [aiModel, setAiModel] = useState("AI Model");
   const [imageUrl, setImageUrl] = useState(""); // Cloudinary URL
+  const [loading, setLoading] = useState(false)
+  const [AiModel_model, setAiModel_model] = useState('')
+  const {aiCreate, setaiCreate}=useContext(aiCreateContext);
+
 
   const onImageSelect = (e) => {
     const file = e.target.files[0];
@@ -26,8 +37,11 @@ const CreateFrame = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true)
+    const buttonbuild=document.getElementById("buildcode")
+    buttonbuild.disabled=true
+    buttonbuild.style.cursor = 'not-allowed';
     if (!imageUrl) return alert("Please select an image.");
-
     const formData = new FormData();
     formData.append("file", imageUrl);
     formData.append("model", aiModel);
@@ -45,11 +59,17 @@ const CreateFrame = () => {
       });
 
       const data = await res.json();
-      if (data.url) {
-        setImageUrl(data.url);
-        console.log("Image uploaded:", data.url);
-        // You can now send `description`, `aiModel`, and `data.url` to your own API
+      if (data) {
+        const encodeUrl=encodeURIComponent(data.url);
+        console.log("Before Initailize: ",aiCreate)
+        setaiCreate({
+          prompt:description,
+          model:AiModel_model,
+          url:data.url
+        })
+        console.log("After Initailize: ",aiCreate)
         alert("Image uploaded successfully!");
+        route.push(`/codeEditor/${encodeUrl}`)
       }
     } catch (err) {
       console.error("Upload error:", err);
@@ -58,10 +78,11 @@ const CreateFrame = () => {
   };
 
   const ailist = [
-    { icon: "/logos/gemini.png", title: "Google Gemini" },
-    { icon: "/logos/grok.png", title: "X Grok" },
-    { icon: "/logos/deepseek.png", title: "DeepSeek" },
-    { icon: "/logos/gpt-35.webp", title: "GPT 3.0" },
+    { icon: "/logos/gemini.png", title: "Qwen2.5 Coder", model:"qwen/qwen-2.5-coder-32b-instruct:free"},
+    { icon: "/logos/grok.png", title: "Agentica: Deepcoder",model:"agentica-org/deepcoder-14b-preview:free" },
+    { icon: "/logos/deepseek.png", title: "OlympicCoder",model:"open-r1/olympiccoder-32b:free" },
+    { icon: "/logos/gpt-35.webp", title: "Meta: Llama 3.2", model:"meta-llama/llama-3.2-11b-vision-instruct:free" },
+    { icon: "/logos/deepseek.png", title: "Deepseek R1 Distill Qwen", model:"deepseek/deepseek-r1-distill-qwen-14b:free" },
   ];
 
   return (
@@ -99,7 +120,7 @@ const CreateFrame = () => {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>List of Models</DropdownMenuLabel>
                   {ailist.map((model, index) => (
-                    <DropdownMenuItem key={index} onSelect={() => setAiModel(model.title)}>
+                    <DropdownMenuItem key={index} onSelect={() => {setAiModel(model.title); setAiModel_model(model.model)}}>
                       <Image src={model.icon} width={20} height={20} alt={model.title} className="mr-2" />
                       {model.title}
                     </DropdownMenuItem>
@@ -124,11 +145,13 @@ const CreateFrame = () => {
 
       {/* Submit Button */}
       <div className="w-full flex justify-center items-center mt-10">
+        
         <button
           onClick={handleSubmit}
+          id="buildcode"
           className="bg-[#DFD0B8] text-[#222831] border-[#393E46] border border-dashed py-2 px-4 flex justify-center items-center gap-5"
         >
-          <i className="bx bx-cog bx-spin bx-flip-horizontal text-3xl"></i> Build Code
+          {loading?<i className="bx bx-cog bx-spin bx-flip-horizontal text-3xl"></i>:<i className="bx bx-cog bx-flip-horizontal text-3xl"></i>} Build Code
         </button>
       </div>
     </>
