@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { ImageDetails } from '@/db/schema';
 import { v2 as cloudinary } from 'cloudinary';
+import { ConsoleLogWriter } from 'drizzle-orm';
 import streamifier from 'streamifier';
 
 // Cloudinary config
@@ -12,12 +13,13 @@ cloudinary.config({
 
 export async function POST(req) {
   const formdata = await req.formData();
-  const description=formdata.get("description")
-  const model=formdata.get("model")
-  const file=formdata.get("file")
-
-//   const file = formData.get('file'); // Assuming you're sending a field named "file"
-    console.log("details:", model, file, description)
+  const description = formdata.get("description")
+  const model = formdata.get("model")
+  const file = formdata.get("file")
+  const user_id = formdata.get("user_id")
+  const clerk_id = formdata.get("clerk_id")
+  const createdby = formdata.get("createdby")
+  console.log("details:", model, file, description, user_id, clerk_id, createdby)
   if (!file) {
     return new Response("No file uploaded", { status: 400 });
   }
@@ -36,22 +38,19 @@ export async function POST(req) {
 
   try {
     const result = await uploadFromBuffer();
-    const imgurl=result.secure_url;
-    const dbresult=await db.insert(ImageDetails).values({
-        img_url:imgurl,
-        model:model,
-       description:description,
-       
-       
-       
-        // descriptio
-        // code:varch
-        // createdby:
-        // user_id:in
-        // clerk_id:v
-    })
-    return Response.json({ url: result.secure_url });
+    const imgurl = result.secure_url;
+    const dbresult = await db.insert(ImageDetails).values({
+      img_url: imgurl,
+      model: model,
+      description: description,
+      createdby: createdby,
+      user_id: user_id,
+      clerk_id: clerk_id
+    }).returning({ id: ImageDetails.id, url: ImageDetails.img_url });
+    const [{ id, url }] = dbresult
+    return Response.json({ id, url });
   } catch (error) {
+    console.log(error.message)
     return new Response("Upload failed", { status: 500 });
   }
 }
