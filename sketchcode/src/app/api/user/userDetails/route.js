@@ -14,7 +14,7 @@ export async function POST(req) {
       .select()
       .from(userTable)
       .where(eq(userTable.clerkid, userId));
-      console.log("fetched user: ",userData[0])
+      
     return NextResponse.json(userData[0] || {});
   } catch (error) {
     console.error('DB Error:', error);
